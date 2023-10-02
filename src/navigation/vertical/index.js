@@ -26,6 +26,31 @@ const navigation = () => {
       icon: Table,
       path: '/categories'
     },
+    {
+      title: 'Manage Services',
+      icon: Table,
+      path: '/services'
+    },
+    {
+      title: 'Manage Banner',
+      icon: Table,
+      path: '/banner'
+    },
+    {
+      title: 'Manage Districts',
+      icon: Table,
+      path: '/districts'
+    },
+    {
+      title: 'Manage Unions',
+      icon: Table,
+      path: '/unions'
+    },
+    {
+      title: 'Manage Users',
+      icon: Table,
+      path: '/users'
+    },
     // {
     //   title: 'Login',
     //   icon: Login,

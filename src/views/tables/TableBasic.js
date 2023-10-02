@@ -1,60 +1,109 @@
 // ** MUI Imports
-import Paper from '@mui/material/Paper'
-import Table from '@mui/material/Table'
-import TableRow from '@mui/material/TableRow'
-import TableHead from '@mui/material/TableHead'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
+import * as React from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+// import Banner2 from './images/food.jpg';
+import { IconButton, Menu, MenuItem } from '@mui/material';
+import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import Button from '@mui/material/Button';
 
-const createData = (name, calories, fat, carbs, protein) => {
-  return { name, calories, fat, carbs, protein }
-}
+const columns = [
+  
+  { field: 'categoryname', headerName: 'Category Name', width: 280, headerClassName: 'boldHeader' },  
+  {
+    field: 'image',
+    headerName: 'Image',
+    sortable: false,
+    width: 200,
+    renderCell: (params) => (
+      <img
+        src={params.row.image} // Use the 'image' field from your data
+        alt="User Avatar"
+        style={{ width: '100%', height: 'auto' }}
+      />
+    ),
+    },
+    { field: 'status', headerName: 'Status', width: 150 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+     width: 150 ,
+      renderCell: (params) => (
+        <ActionMenu id={params.row.id} />
+      ),
+    },
+ 
+];
 
 const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9)
-]
+  { id: 1,
+    categoryname: 'Snow',
+    image: '/images/avatars/1.png', 
+    status: 'Active',
+   
+       },
 
-const TableBasic = () => {
+];
+
+function ActionMenu({ id }) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-        <TableHead>
-          <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align='right'>Calories</TableCell>
-            <TableCell align='right'>Fat (g)</TableCell>
-            <TableCell align='right'>Carbs (g)</TableCell>
-            <TableCell align='right'>Protein (g)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map(row => (
-            <TableRow
-              key={row.name}
-              sx={{
-                '&:last-of-type td, &:last-of-type th': {
-                  border: 0
-                }
-              }}
-            >
-              <TableCell component='th' scope='row'>
-                {row.name}
-              </TableCell>
-              <TableCell align='right'>{row.calories}</TableCell>
-              <TableCell align='right'>{row.fat}</TableCell>
-              <TableCell align='right'>{row.carbs}</TableCell>
-              <TableCell align='right'>{row.protein}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <IconButton aria-controls={`menu-${id}`} aria-haspopup="true" onClick={handleClick}>
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id={`menu-${id}`}
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem> <Button variant="contained" onClick={() => handleEdit(id)} >Edit</Button></MenuItem>
+        <MenuItem> <Button variant="contained" onClick={() => handleDelete(id)} >Delete</Button></MenuItem>
+      </Menu>
+    </>
+  );
+}
+
+const handleEdit = (id) => {
+  // Add your edit logic here
+  console.log(`Edit clicked for row with ID ${id}`);
+};
+
+const handleDelete = (id) => {
+  // Add your delete logic here
+  console.log(`Delete clicked for row with ID ${id}`);
+};
+
+
+const Category = () => {
+  return (
+    <>
+    <div style={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 10 },
+          },
+        }}
+        pageSizeOptions={[10, 20]}
+        // checkboxSelection
+      />
+    </div>
+    
+</>
   )
 }
 
-export default TableBasic
+export default Category

@@ -24,6 +24,7 @@ import SalesByCountries from 'src/views/dashboard/SalesByCountries'
 
 const Dashboard = () => {
   return (
+    <>
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={4}>
@@ -95,6 +96,9 @@ const Dashboard = () => {
         </Grid>
       </Grid>
     </ApexChartWrapper>
+    <div className='text-3xl text-green-600 p-2'>
+hello</div>
+    </>
   )
 }
 
