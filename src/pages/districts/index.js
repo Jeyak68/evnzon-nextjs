@@ -19,6 +19,22 @@ const MUITable = () => {
           </Link>
         </Typography>
       </Grid>
+
+      <Grid container spacing={6} >
+                <Grid item xs={8}>
+                </Grid>
+                <Grid item xs={4} >
+                  <div className = "text-right">
+                  <Link href='/districts/district_add' target=''>
+                <button className="btn btn-lg px-6 py-3 text-sm text-white rounded-full bg-blue-800 hover:bg-blue-700 text-right">
+                    Add District
+                  </button>
+                  </Link>
+
+                  </div>
+                </Grid>
+            </Grid>
+
       <Grid item xs={12}>
         <Card>
           

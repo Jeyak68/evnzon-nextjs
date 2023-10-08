@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button';
 
 // ** Demo Components Imports
-// import TableBasic from 'src/views/tables/TableBasic'
 import Category from 'src/views/submenu/Category'
 
 
@@ -21,8 +20,21 @@ const MUITable = () => {
           </Link>
         </Typography>
       </Grid>
-      
 
+            <Grid container spacing={6} >
+                <Grid item xs={8}>
+                </Grid>
+                <Grid item xs={4} >
+                  <div className = "text-right">
+                  <Link href='/categories/category_add' target=''>
+                <button className="btn btn-lg px-6 py-3 text-sm text-white rounded-full bg-blue-800 hover:bg-blue-700 text-right">
+                    Add Category
+                  </button>
+                  </Link>
+
+                  </div>
+                </Grid>
+            </Grid>
       <Grid item xs={12}>
         <Card>
           

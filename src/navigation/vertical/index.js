@@ -3,19 +3,27 @@ import Login from 'mdi-material-ui/Login'
 import Table from 'mdi-material-ui/Table'
 import CubeOutline from 'mdi-material-ui/CubeOutline'
 import HomeOutline from 'mdi-material-ui/HomeOutline'
-import FormatLetterCase from 'mdi-material-ui/FormatLetterCase'
-import AccountCogOutline from 'mdi-material-ui/AccountCogOutline'
-import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
-import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
-import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
-import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
+import FormatLetterCase from 'mdi-material-ui/';
+import SpeedIcon from '@mui/icons-material/Speed';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
+import LocationCityIcon from '@mui/icons-material/LocationCity';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const navigation = () => {
   return [
-    {
-      title: 'Dashboard',
-      icon: HomeOutline,
-      path: '/'
+    // {
+    //   title: 'Dashboard',
+    //   icon: HomeOutline,
+    //   path: '/'
+    // },
+
+     {
+      title: 'Login',
+      icon: Login,
+      path: '/pages/login',
+      openInNewTab: true
     },
    
     {
@@ -23,32 +31,32 @@ const navigation = () => {
     },
       {
       title: 'Manage Categories',
-      icon: Table,
+      icon: SpeedIcon,
       path: '/categories'
     },
     {
       title: 'Manage Services',
-      icon: Table,
+      icon: ContentCopyIcon,
       path: '/services'
     },
     {
       title: 'Manage Banner',
-      icon: Table,
+      icon: ViewCarouselIcon,
       path: '/banner'
     },
     {
       title: 'Manage Districts',
-      icon: Table,
+      icon: LocationCityIcon,
       path: '/districts'
     },
     {
       title: 'Manage Unions',
-      icon: Table,
+      icon: AcUnitIcon,
       path: '/unions'
     },
     {
       title: 'Manage Users',
-      icon: Table,
+      icon: AccountCircleIcon,
       path: '/users'
     },
     // {

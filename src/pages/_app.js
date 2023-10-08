@@ -28,6 +28,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 import '../../styles/globals.css'
 import 'tailwindcss/tailwind.css';
 
+
 const clientSideEmotionCache = createEmotionCache()
 
 // ** Pace Loader
