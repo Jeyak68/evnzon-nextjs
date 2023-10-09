@@ -9,6 +9,7 @@ function ServiceAdd() {
   const [priceName, setPriceName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [orderName, setOrderName] = useState('');
+  const [textFields, setTextFields] = useState([""]); 
 
   
   const [selectedValue, setSelectedValue] = useState('active');
@@ -35,6 +36,7 @@ function ServiceAdd() {
       selectedCategory,
       selectedDistrict,
       selectedUnion,
+      textFields,
     };
 
     try {
@@ -59,6 +61,24 @@ function ServiceAdd() {
     router.push('/services');
 
   };
+
+  
+  const addTextField = () => {
+    setTextFields([...textFields, ""]);
+  };
+
+  const handleTextFieldChange = (index, value) => {
+    const updatedTextFields = [...textFields];
+    updatedTextFields[index] = value;
+    setTextFields(updatedTextFields);
+  };
+
+  const removeTextField = (index) => {
+    const updatedTextFields = [...textFields];
+    updatedTextFields.splice(index, 1);
+    setTextFields(updatedTextFields);
+  };
+
 
   return (
     <div className="container mx-auto">
@@ -181,6 +201,26 @@ function ServiceAdd() {
               Inactive
             </label>
           </div>
+          <div>
+      <h1>Dynamic Text Fields Example</h1>
+      <div>
+      <button onClick={addTextField}>Add Text Field</button>
+      {textFields.map((text, index) => (
+        <div key={index} className="mt-4">
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => handleTextFieldChange(index, e.target.value)}
+            className="border border-gray-300 p-2"
+          />
+          <button onClick={() => removeTextField(index)}>Remove</button>
+        </div>
+      ))}
+    </div>
+
+    </div>
+
+
           <div className="flex justify-end">
             <button
               type="submit"
