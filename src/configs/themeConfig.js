@@ -1,6 +1,8 @@
 const themeConfig = {
   // ** Layout Configs
   templateName: 'EVNZON' /* App Name */,
+
+  url: 'https://ae29-117-203-77-90.ngrok-free.app/api/',
   mode: 'light' /* light | dark */,
   contentWidth: 'boxed' /* full | boxed */,
   // ** Routing Configs

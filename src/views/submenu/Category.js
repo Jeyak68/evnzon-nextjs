@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -6,58 +6,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/router';
 
 
-const rows = [
-  {
-    id: 1,
-    categoryname: 'WEDDING HALLS',
-    image: '/images/kalyanamandapam.jpg',
-    status: 'Active',
-  },
-  {
-    id: 2,
-    categoryname: 'WEDDING CARDS',
-    image: '/images/decoration.jpg',
-    status: 'Active',
-  },
-  {
-    id: 3,
-    categoryname: 'PHOTOGRAPHY',
-    image: '/images/photography.jpg',
-    status: 'Active',
-  },
-  {
-    id: 4,
-    categoryname: 'MAKE UP',
-    image: '/images/makeup.jpg',
-    status: 'Active',
-  },
-  {
-    id: 5,
-    categoryname: 'ICE CREAM',
-    image: '/images/icecream.jpg',
-    status: 'Active',
-  },
-  {
-    id: 6,
-    categoryname: 'FOOD',
-    image: '/images/food.jpg',
-    status: 'Active',
-  },
-  {
-    id: 7,
-    categoryname: 'DECORATION',
-    image: '/images/decoration.jpg',
-    status: 'Active',
-  },
-];
-
-
-// const handleDelete = (id) => {
-//   // Add your delete logic here
-//   console.log(`Delete clicked for row with ID ${id}`);
-// };
-
 const Category = () => {
+
+  const [apiData, setApiData] = useState([]);
 
     const router = useRouter();
   const [selectedItemId, setSelectedItemId] = React.useState(null);
@@ -73,18 +24,78 @@ const Category = () => {
     setIsDeleteDialogOpen(false);
   };
 
-  const handleDelete = () => {
-    // Perform the delete operation here, e.g., send a delete request to your API
-    console.log(`Delete clicked for row with ID ${selectedItemId}`);
 
-    // Close the confirmation dialog
-    closeDeleteDialog();
+  useEffect(() => {
+    // Fetch data from the API when the component mounts
+    fetchData();
+    handleDelete();
+
+   
+  }, []);
+
+  const handleDelete = async () => {
+
+    try {
+
+      const response = await fetch('http://127.0.0.1:8000/api/delete_category', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json', // Set the content type to JSON
+            },
+            body: JSON.stringify({ id: selectedItemId }), // Send the data as JSON
+          });
+
+
+      if (response.ok) {
+        // If the response status is OK (2xx), you can parse the response data
+        const data = await response.json();
+        console.log('API response data:', data);
+        fetchData();
+      } else {
+        // Handle errors or non-OK responses here
+        console.error('API request failed with status:', response.status);
+  
+      }
+    } catch (error) {
+      console.error('An error occurred while making the API request:', error);
+
+    }
+
+   
+// Close the confirmation dialog
+closeDeleteDialog();
+router.push('/categories'); 
+
+};
+
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/category_list', {
+      method: 'POST', // Set the HTTP method to POST
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Response Body:', data.data);
+
+        // Update the state with the data fetched from the API
+        setApiData(data.data);
+      } else {
+        // Handle the response if it's not okay (e.g., non-2xx status code)
+        console.error('Error fetching data from API:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+    }
   };
 
 
-
   const columns = [
-    { field: 'categoryname', headerName: 'Category Name', width: 280 , headerClassName: 'header-bold header-black',},
+    { field: 'name', headerName: 'Category Name', width: 280 , headerClassName: 'header-bold header-black',},
     {
       field: 'image',
       headerName: 'Image',
@@ -143,9 +154,10 @@ const Category = () => {
 
   return (
     <>
+    
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={apiData}
           columns={columns}
           initialState={{
             pagination: {
