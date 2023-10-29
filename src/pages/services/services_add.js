@@ -11,10 +11,12 @@ function ServiceAdd() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [direction, setDirection] = useState('');
   const [description, setDescription] = useState([{ Address: '', Chair: '' }]);
-  const [image, setImage] = useState(null);
+  // const [image, setImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [images, setImages] = useState([]);
 
+  const [previewImages, setPreviewImages] = useState([]);
 
   // const [selectedValue, setSelectedValue] = useState('active');
   const router = useRouter();
@@ -49,12 +51,16 @@ function ServiceAdd() {
         formData.append('description', JSON.stringify(description));
         formData.append('fromPrice', priceName);
         //  formData.append('photos', image);
-         formData.append('photos', '');
+        //  formData.append('photos', '');
         formData.append('direction', direction);
         formData.append('mobile', phoneNumber);
         formData.append('name', serviceName);
         formData.append('location', selectedDistrict);
-
+        // formData.append('photos', images1);
+        images.forEach((image, index) => {
+          formData.append(`photos${index}`, image);
+        });
+    
 
         formData.append('noofRatings', '2');
         formData.append('queries', '2');
@@ -101,7 +107,17 @@ function ServiceAdd() {
     }
   };
 
+  const handleMultipleImageChange = (e) => {
+    const selectedImages = Array.from(e.target.files);
 
+    setImages([...images, ...selectedImages]);
+
+    const selectedImagePreviews = selectedImages.map((image) => URL.createObjectURL(image));
+
+    setPreviewImages([...previewImages, ...selectedImagePreviews]);
+  };
+
+ 
   const handleCancel = () => {
     router.push('/services');
 
@@ -339,7 +355,7 @@ function ServiceAdd() {
       </div>
       
       <div className="bg-gray-200 w-full p-6 rounded-lg">
-      <div className="container mx-auto">
+      {/* <div className="container mx-auto">
             <h1 className="block font-medium mb-2">Service Pic</h1>
             <input
               type="file"
@@ -353,8 +369,19 @@ function ServiceAdd() {
                 <img src={image} alt="Uploaded" className="mt-2 max-w-md" />
               </div>
             )}
-          </div>
- 
+          </div> */}
+          <h1 className="block font-medium mb-2 pt-2">Multiple Image</h1>
+          <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleMultipleImageChange}
+            />
+          <div>
+              {previewImages.map((image, index) => (
+                <img key={index} src={image} alt={`Preview ${index}`} />
+              ))}
+            </div>
         </div>
       </div>
     
