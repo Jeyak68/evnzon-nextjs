@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 function ServiceAdd() {
   const [serviceName, setServiceName] = useState('');
+  const [districtName, setDistrictName] = useState('');
   const [priceName, setPriceName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [direction, setDirection] = useState('');
@@ -15,6 +16,7 @@ function ServiceAdd() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [previewImages, setPreviewImages] = useState([]);
 
@@ -29,6 +31,7 @@ function ServiceAdd() {
   };
 
   useEffect(() => {
+    fetchData();
     if (errorMessage || successMessage) {
       const timeoutId = setTimeout(() => {
         closeMessages();
@@ -38,27 +41,61 @@ function ServiceAdd() {
       // Clear the timeout when the component unmounts
       return () => clearTimeout(timeoutId);
     }
+
+   
   }, [errorMessage, successMessage, router]);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/category_list', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Response Body:', data.data);
+  
+        // Ensure that categories is always an array
+        const fetchedCategories = data.data || [];
+        
+        // Update the state with the data fetched from the API
+        setCategories(fetchedCategories);
+  
+        // Optional: You can also set a default selected category if needed.
+        // For example, select the first category by default:
+        if (fetchedCategories.length > 0) {
+          categoryRef.current.value = fetchedCategories[0].id;
+        }
+      } else {
+        // Handle the response if it's not okay (e.g., non-2xx status code)
+        console.error('Error fetching data from API:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const selectedCategory = categoryRef.current.value;
-    const selectedDistrict = districtRef.current.value;
+    // const selectedDistrict = districtRef.current.value;
 
         // Create a FormData object to send the file
         const formData = new FormData();
         formData.append('description', JSON.stringify(description));
         formData.append('fromPrice', priceName);
-        //  formData.append('photos', image);
-        //  formData.append('photos', '');
+        formData.append('location', districtName);
         formData.append('direction', direction);
         formData.append('mobile', phoneNumber);
         formData.append('name', serviceName);
-        formData.append('location', selectedDistrict);
-        // formData.append('photos', images1);
-        images.forEach((image, index) => {
-          formData.append(`photos${index}`, image);
+        // formData.append('location', selectedDistrict);
+        images.forEach((image) => {
+          formData.append(`photos`, image);
         });
     
 
@@ -200,16 +237,17 @@ function ServiceAdd() {
               ref={categoryRef} // Attach the ref to the dropdown
             >
              <option value="">Select Category</option>
-              <option value="1">Decration</option>
-              <option value="2">Wedding Hall</option>
-              <option value="3">Food</option>
-              <option value="4">Ice Cream</option>
-              <option value="5">Photography</option>
-              <option value="6">Make UP</option>
-              <option value="7">Wedding Cards</option>
+
+             {categories.map((category) => (
+      <option key={category.id} value={category.id}>
+        {category.name}
+      </option>
+    ))}
+
+
             </select>
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label htmlFor="dropdown" className="block font-medium pb-2">
               District
             </label>
@@ -225,6 +263,19 @@ function ServiceAdd() {
               <option value="4">Namakkal</option>
               <option value="5">Thiruvallur</option>
             </select>
+          </div> */}
+          <div className="mb-4">
+            <label htmlFor="districtname" className="block font-medium pb-2">
+            Enter District Name*
+            </label>
+            <input
+              type="text"
+              id="districtname"
+              className="w-full border border-blue-300  rounded px-3 py-2 focus:text-blue-500"
+              value={districtName}
+              onChange={(e) => setDistrictName(e.target.value)}
+              placeholder="Enter District Name"
+            />
           </div>
           <div className="mb-4">
             <label htmlFor="pricename" className="block font-medium pb-2">
