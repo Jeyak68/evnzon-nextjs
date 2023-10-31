@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -6,46 +6,48 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/router';
 
 
-const rows = [
-  {
-    id: 1,
-    districtname: 'Chennai',
-    status: 'Active',
-  },
-  {
-    id: 2,
-    districtname: 'Coimbatore',
-    status: 'Active',
-  },
-  {
-    id: 3,
-    districtname: 'Erode',
-    status: 'Active',
-  },
-  {
-    id: 4,
-    districtname: 'Namakkal',
-    status: 'Active',
-  },
-  {
-    id: 5,
-    districtname: 'Tiruvallur',
-    status: 'Active',
-  },
-  {
-    id: 6,
-    districtname: 'Ariyalur',
-    status: 'Active',
-  },
-  {
-    id: 7,
-    districtname: 'Chengalpattu',
-    status: 'Active',
-  },
-];
+// const rows = [
+//   {
+//     id: 1,
+//     districtname: 'Chennai',
+//     status: 'Active',
+//   },
+//   {
+//     id: 2,
+//     districtname: 'Coimbatore',
+//     status: 'Active',
+//   },
+//   {
+//     id: 3,
+//     districtname: 'Erode',
+//     status: 'Active',
+//   },
+//   {
+//     id: 4,
+//     districtname: 'Namakkal',
+//     status: 'Active',
+//   },
+//   {
+//     id: 5,
+//     districtname: 'Tiruvallur',
+//     status: 'Active',
+//   },
+//   {
+//     id: 6,
+//     districtname: 'Ariyalur',
+//     status: 'Active',
+//   },
+//   {
+//     id: 7,
+//     districtname: 'Chengalpattu',
+//     status: 'Active',
+//   },
+// ];
 
 
 const District = () => {
+
+  const [apiData, setApiData] = useState([]);
 
   const router = useRouter();
   const [selectedItemId, setSelectedItemId] = React.useState(null);
@@ -61,18 +63,77 @@ const District = () => {
     setIsDeleteDialogOpen(false);
   };
 
-  const handleDelete = () => {
-    // Perform the delete operation here, e.g., send a delete request to your API
-    console.log(`Delete clicked for row with ID ${selectedItemId}`);
+  useEffect(() => {
+    // Fetch data from the API when the component mounts
+    fetchData();
+    handleDelete();
 
-    // Close the confirmation dialog
-    closeDeleteDialog();
+   
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('https://sibiselva2000.pythonanywhere.com/api/get_city', {
+      method: 'POST', // Set the HTTP method to POST
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Response Body:', data);
+
+        // Update the state with the data fetched from the API
+        // setApiData(data.data);
+        setApiData(data.data.map((name, index) => ({ id: index, name })));
+
+      } else {
+        // Handle the response if it's not okay (e.g., non-2xx status code)
+        console.error('Error fetching data from API:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+    }
   };
+  const handleDelete = async () => {
+
+    try {
+
+      const response = await fetch('https://sibiselva2000.pythonanywhere.com/api/delete_category', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json', // Set the content type to JSON
+            },
+            body: JSON.stringify({ id: selectedItemId }), // Send the data as JSON
+          });
+
+
+      if (response.ok) {
+        // If the response status is OK (2xx), you can parse the response data
+        const data = await response.json();
+        console.log('API response data:', data);
+        fetchData();
+      } else {
+        // Handle errors or non-OK responses here
+        console.error('API request failed with status:', response.status);
+  
+      }
+    } catch (error) {
+      console.error('An error occurred while making the API request:', error);
+
+    }
+
+   
+// Close the confirmation dialog
+closeDeleteDialog();
+router.push('/districts'); 
+
+};
 
 
   const columns = [
-    { field: 'districtname', headerName: 'District Name', width: 350, headerClassName: 'header-bold header-black',},
-   { field: 'status', headerName: 'Status', width: 150 ,headerClassName: 'header-bold header-black',},
+    { field: 'name', headerName: 'District Name', width: 350, headerClassName: 'header-bold header-black',},
    {
      field: 'action',
      headerName: 'Action',
@@ -115,8 +176,10 @@ const District = () => {
     <>
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={apiData}
           columns={columns}
+          getRowId={(row) => row} // Use the row itself as the ID
+
           initialState={{
             pagination: {
               paginationModel: { page: 0, pageSize: 10 },

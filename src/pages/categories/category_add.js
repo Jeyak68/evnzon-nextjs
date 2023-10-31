@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 function CategoryAdd() {
   const [name, setName] = useState('');
   const [index, setIndex] = useState('');
-  // const [selectedValue, setSelectedValue] = useState('active');
   const [image, setImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -40,7 +39,6 @@ function CategoryAdd() {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('index', index);
-    // formData.append('selectedValue', selectedValue);
     formData.append('image', image);
   
     try {
@@ -69,9 +67,9 @@ function CategoryAdd() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 1024 * 1024 * 10) { // Check if the file size is greater than 10MB
+      if (file.size > 1024 * 1024 * 10) 
+      { 
         setErrorMessage('Image size is too large. Please choose a smaller image.');
-        return;
       }
   
       const reader = new FileReader();

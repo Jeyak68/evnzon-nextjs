@@ -7,13 +7,20 @@ import { useRouter } from 'next/router';
 
 function ServiceEdit() {
   const [serviceName, setServiceName] = useState('');
+  const [districtName, setDistrictName] = useState('');
   const [priceName, setPriceName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [direction, setDirection] = useState('');
   const [description, setDescription] = useState([{ Address: '', Chair: '' }]);
-  const [image, setImage] = useState(null);
+  
+   const [image, setImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [previewImages, setPreviewImages] = useState([]);
+
+
   const [isDataLoaded, setIsDataLoaded] = useState(false); // Track if data is loaded
   const [editid, setEditId] = useState(null);
   const [data, setData] = useState(null);
@@ -25,7 +32,6 @@ function ServiceEdit() {
   const { id } = router.query; // Retrieve the ID from query parameters
 
   const categoryRef = useRef(null);
-  const districtRef = useRef(null);
 
   const closeMessages = () => {
     setErrorMessage('');
@@ -33,6 +39,7 @@ function ServiceEdit() {
   };
 
   useEffect(() => {
+    fetchData1();
     if (errorMessage || successMessage) {
       const timeoutId = setTimeout(() => {
         closeMessages();
@@ -65,9 +72,9 @@ function ServiceEdit() {
           console.log(response)
           if (response.ok) {
             const data = await response.json();
-            // const filteredData = data.filter(item => item.id === id);
           
             setServiceName(data.data.name);
+            setDistrictName(data.data.location);
             setPriceName(data.data.fromPrice);
             setPhoneNumber(data.data.mobile);
             setDirection(data.data.direction);
@@ -91,22 +98,53 @@ function ServiceEdit() {
     }
   }, [errorMessage, successMessage, router]);
 
+  const fetchData1 = async () => {
+    try {
+      const response = await fetch('https://sibiselva2000.pythonanywhere.com/api/category_list', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Response Body:', data.data);
+  
+        // Ensure that categories is always an array
+        const fetchedCategories = data.data || [];
+        
+        // Update the state with the data fetched from the API
+        setCategories(fetchedCategories);
+  
+        // Optional: You can also set a default selected category if needed.
+        // For example, select the first category by default:
+        if (fetchedCategories.length > 0) {
+          categoryRef.current.value = fetchedCategories[0].id;
+        }
+      } else {
+        // Handle the response if it's not okay (e.g., non-2xx status code)
+        console.error('Error fetching data from API:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const selectedCategory = categoryRef.current.value;
-    const selectedDistrict = districtRef.current.value;
 
         // Create a FormData object to send the file
         const formData = new FormData();
         formData.append('description', JSON.stringify(description));
         formData.append('fromPrice', priceName);
-        //  formData.append('photos', image);
          formData.append('photos', '');
         formData.append('direction', direction);
         formData.append('mobile', phoneNumber);
         formData.append('name', serviceName);
-        formData.append('location', selectedDistrict);
+        formData.append('location', districtName);
         formData.append('id', id);
 
         formData.append('noofRatings', '2');
@@ -114,7 +152,7 @@ function ServiceEdit() {
         formData.append('ratings', '2');
         formData.append('totalRating', '2');
         formData.append('type', '2');
-        formData.append('service_name', 'decorations');
+        formData.append('service_name', selectedCategory);
 
         console.log('data:', formData);
         try {
@@ -139,20 +177,30 @@ function ServiceEdit() {
         }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 1024 * 1024 * 10) { // Check if the file size is greater than 10MB
-        setErrorMessage('Image size is too large. Please choose a smaller image.');
-        return;
-      }
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     if (file.size > 1024 * 1024 * 10) { // Check if the file size is greater than 10MB
+  //       setErrorMessage('Image size is too large. Please choose a smaller image.'); return;
+       
+  //     }
   
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       setImage(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
+  const handleMultipleImageChange = (e) => {
+    const selectedImages = Array.from(e.target.files);
+
+    setImages([...images, ...selectedImages]);
+
+    const selectedImagePreviews = selectedImages.map((image) => URL.createObjectURL(image));
+
+    setPreviewImages([...previewImages, ...selectedImagePreviews]);
   };
 
 
@@ -257,16 +305,16 @@ function ServiceEdit() {
               ref={categoryRef} // Attach the ref to the dropdown
             >
              <option value="">Select Category</option>
-              <option value="1">Decration</option>
-              <option value="2">Wedding Hall</option>
-              <option value="3">Food</option>
-              <option value="4">Ice Cream</option>
-              <option value="5">Photography</option>
-              <option value="6">Make UP</option>
-              <option value="7">Wedding Cards</option>
+
+             {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
             </select>
           </div>
-          <div className="mb-4">
+
+          {/* <div className="mb-4">
             <label htmlFor="dropdown" className="block font-medium pb-2">
               District
             </label>
@@ -283,6 +331,20 @@ function ServiceEdit() {
               <option value="4">Namakkal</option>
               <option value="5">Thiruvallur</option>
             </select>
+          </div> */}
+
+            <div className="mb-4">
+            <label htmlFor="districtname" className="block font-medium pb-2">
+            Enter District Name*
+            </label>
+            <input
+              type="text"
+              id="districtname"
+              className="w-full border border-blue-300  rounded px-3 py-2 focus:text-blue-500"
+              value={districtName}
+              onChange={(e) => setDistrictName(e.target.value)}
+              placeholder="Enter District Name"
+            />
           </div>
           <div className="mb-4">
             <label htmlFor="pricename" className="block font-medium pb-2">
@@ -371,7 +433,7 @@ function ServiceEdit() {
             className="mr-2 p-1 border border-gray-300 rounded"
           />
           {description.length > 1   && (
-            <div class="pr-2">
+            <div className="pr-2">
             <button
               onClick={() => handleRemoveInput(index)}
               className="mt-2 p-1 bg-red-500 text-white rounded-full"
@@ -413,26 +475,25 @@ function ServiceEdit() {
         
           </form>
             ) : (
-              // Render a loading indicator while data is being fetched
               <div>Loading...</div>
             )}
       </div>
       
       <div className="bg-gray-200 w-full p-6 rounded-lg">
       <div className="container mx-auto">
-            <h1 className="block font-medium mb-2">Service Pic</h1>
-            <input
+          
+      <h1 className="block font-medium mb-2 pt-2">Multiple Image</h1>
+          <input
               type="file"
               accept="image/*"
-              onChange={handleImageChange}
-              className="mb-4"
+              multiple
+              onChange={handleMultipleImageChange}
             />
-            {image && (
-              <div className="mb-4">
-                <h2 className="text-xl font-semibold">Preview:</h2>
-                <img src={image} alt="Uploaded" className="mt-2 max-w-md" />
-              </div>
-            )}
+          <div>
+              {previewImages.map((image, index) => (
+                <img key={index} src={image} alt={`Preview ${index}`} />
+              ))}
+            </div>
           </div>
  
         </div>

@@ -54,7 +54,6 @@ function CategoryEdit() {
           console.log(response)
           if (response.ok) {
             const data = await response.json();
-            // const filteredData = data.filter(item => item.id === id);
             setName(data.data.name);
             setIndex(data.data.index);
             setImage(data.data.image);
@@ -221,7 +220,6 @@ function CategoryEdit() {
         </form>
 
         ) : (
-          // Render a loading indicator while data is being fetched
           <div>Loading...</div>
         )}
 

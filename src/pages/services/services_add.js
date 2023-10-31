@@ -12,15 +12,12 @@ function ServiceAdd() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [direction, setDirection] = useState('');
   const [description, setDescription] = useState([{ Address: '', Chair: '' }]);
-  // const [image, setImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [images, setImages] = useState([]);
   const [categories, setCategories] = useState([]);
-
   const [previewImages, setPreviewImages] = useState([]);
 
-  // const [selectedValue, setSelectedValue] = useState('active');
   const router = useRouter();
   const categoryRef = useRef(null);
   const districtRef = useRef(null);
@@ -83,9 +80,7 @@ function ServiceAdd() {
     e.preventDefault();
 
     const selectedCategory = categoryRef.current.value;
-    // const selectedDistrict = districtRef.current.value;
 
-        // Create a FormData object to send the file
         const formData = new FormData();
         formData.append('description', JSON.stringify(description));
         formData.append('fromPrice', priceName);
@@ -93,7 +88,6 @@ function ServiceAdd() {
         formData.append('direction', direction);
         formData.append('mobile', phoneNumber);
         formData.append('name', serviceName);
-        // formData.append('location', selectedDistrict);
         images.forEach((image) => {
           formData.append(`photos`, image);
         });
@@ -104,7 +98,7 @@ function ServiceAdd() {
         formData.append('ratings', '2');
         formData.append('totalRating', '2');
         formData.append('type', '2');
-        formData.append('service_name', 'decorations');
+          formData.append('service_name', selectedCategory);
 
         console.log('data:', formData);
         try {
@@ -128,21 +122,21 @@ function ServiceAdd() {
         }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 1024 * 1024 * 10) { // Check if the file size is greater than 10MB
-        setErrorMessage('Image size is too large. Please choose a smaller image.');
-        return;
-      }
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     if (file.size > 1024 * 1024 * 10) { // Check if the file size is greater than 10MB
+  //       setErrorMessage('Image size is too large. Please choose a smaller image.');
+  //       return;
+  //     }
   
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       setImage(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const handleMultipleImageChange = (e) => {
     const selectedImages = Array.from(e.target.files);
@@ -208,14 +202,7 @@ function ServiceAdd() {
             <label htmlFor="servicename" className="block font-medium pb-2"  >
               Serice Name
             </label>
-            {/* <input
-              type="text"
-              id="servicename"
-              className="w-full border border-blue-300 rounded px-3 py-2 focus:text-blue-500"
-              value={serviceName}
-              onChange={(e) => setServiceName(e.target.value)}
-              placeholder="Enter Service Name"
-            /> */}
+           
             <input
               type="text"
               name="serviceName"
@@ -239,7 +226,7 @@ function ServiceAdd() {
              <option value="">Select Category</option>
 
              {categories.map((category) => (
-      <option key={category.id} value={category.id}>
+      <option key={category.id} value={category.name}>
         {category.name}
       </option>
     ))}
@@ -247,23 +234,7 @@ function ServiceAdd() {
 
             </select>
           </div>
-          {/* <div className="mb-4">
-            <label htmlFor="dropdown" className="block font-medium pb-2">
-              District
-            </label>
-            <select
-              id="districtid"
-              className="w-full border border-blue-300 rounded px-3 py-2 focus:text-blue-500"
-              ref={districtRef} // Attach the ref to the dropdown
-            >
-            <option value="">Select District</option>
-              <option value="1">Chennai</option>
-              <option value="2">Coimbatore</option>
-              <option value="3">Erode</option>
-              <option value="4">Namakkal</option>
-              <option value="5">Thiruvallur</option>
-            </select>
-          </div> */}
+        
           <div className="mb-4">
             <label htmlFor="districtname" className="block font-medium pb-2">
             Enter District Name*
@@ -317,30 +288,6 @@ function ServiceAdd() {
             />
           </div>
 
-          {/* <div className="pt-4 pb-4">
-            <label className="mr-2">
-              <input
-                type="radio"
-                value="active"
-                checked={selectedValue === 'active'}
-                onChange={handleRadioChange}
-                className="mr-1"
-              />
-              Active
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="inactive"
-                checked={selectedValue === 'inactive'}
-                onChange={handleRadioChange}
-                className="mr-1"
-              />
-              Inactive
-            </label>
-          </div> */}
-          
-
 
     <div>
     <label htmlFor="description" className="block font-medium pb-2">
@@ -364,7 +311,7 @@ function ServiceAdd() {
             className="mr-2 p-1 border border-gray-300 rounded"
           />
           {description.length > 1   && (
-            <div class="pr-2">
+            <div className="pr-2">
             <button
               onClick={() => handleRemoveInput(index)}
               className="mt-2 p-1 bg-red-500 text-white rounded-full"
