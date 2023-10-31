@@ -47,7 +47,7 @@ function ServiceAdd() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/category_list', {
+      const response = await fetch('https://sibiselva2000.pythonanywhere.com/api/category_list', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ function ServiceAdd() {
         console.log('data:', formData);
         try {
           // Send a POST request to the API endpoint with the FormData
-          const response = await axios.post('http://127.0.0.1:8000/api/add_service', formData, {
+          const response = await axios.post('https://sibiselva2000.pythonanywhere.com/api/add_service', formData, {
             headers: {
               'Content-Type': 'multipart/form-data', // Set the content type to multipart/form-data
             },

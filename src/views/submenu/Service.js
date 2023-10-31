@@ -77,7 +77,7 @@ useEffect(() => {
 
     try {
 
-      const response = await fetch('http://127.0.0.1:8000/api/delete_service', {
+      const response = await fetch('https://sibiselva2000.pythonanywhere.com/api/delete_service', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json', // Set the content type to JSON
@@ -110,7 +110,7 @@ router.push('/services');
 
 const fetchData = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/service_list', {
+    const response = await fetch('https://sibiselva2000.pythonanywhere.com/api/service_list', {
     method: 'POST', // Set the HTTP method to POST
       headers: {
         'Content-Type': 'application/json',

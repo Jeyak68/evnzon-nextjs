@@ -37,7 +37,7 @@ const Category = () => {
 
     try {
 
-      const response = await fetch('http://127.0.0.1:8000/api/delete_category', {
+      const response = await fetch('https://sibiselva2000.pythonanywhere.com/api/delete_category', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json', // Set the content type to JSON
@@ -71,7 +71,7 @@ router.push('/categories');
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/category_list', {
+      const response = await fetch('https://sibiselva2000.pythonanywhere.com/api/category_list', {
       method: 'POST', // Set the HTTP method to POST
         headers: {
           'Content-Type': 'application/json',

@@ -43,7 +43,7 @@ function CategoryEdit() {
       // Fetch data based on the ID
       async function fetchData() {
         try {
-          const response = await fetch(`http://127.0.0.1:8000/api/category_edit_details`, {
+          const response = await fetch(`https://sibiselva2000.pythonanywhere.com/api/category_edit_details`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ function CategoryEdit() {
     formData.append('id', id);
     try {
       // Send a POST request to the API endpoint with the FormData
-      const response = await axios.post('http://127.0.0.1:8000/api/edit_category?id=${id}', formData, {
+      const response = await axios.post('https://sibiselva2000.pythonanywhere.com/api/edit_category?id=${id}', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Set the content type to multipart/form-data
         },

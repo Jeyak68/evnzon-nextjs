@@ -56,7 +56,7 @@ const Users = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/get_users', {
+      const response = await fetch('https://sibiselva2000.pythonanywhere.com/api/get_users', {
       method: 'POST', // Set the HTTP method to POST
         headers: {
           'Content-Type': 'application/json',

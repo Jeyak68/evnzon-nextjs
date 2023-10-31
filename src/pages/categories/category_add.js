@@ -45,7 +45,7 @@ function CategoryAdd() {
   
     try {
       // Send a POST request to the API endpoint with the FormData
-      const response = await axios.post('http://127.0.0.1:8000/api/add_category', formData, {
+      const response = await axios.post('https://sibiselva2000.pythonanywhere.com/api/add_category', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Set the content type to multipart/form-data
         },
@@ -81,6 +81,7 @@ function CategoryAdd() {
       reader.readAsDataURL(file);
     }
   };
+  
   
 
   const handleRadioChange = (e) => {
