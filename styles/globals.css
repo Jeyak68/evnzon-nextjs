@@ -3,6 +3,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import 'react-tagsinput/react-tagsinput.css';
 
 html,
 body {
@@ -87,4 +88,10 @@ code[class*='language-'] {
 }
 .header-black {
   color: black;
+}
+
+.tags-input-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
 }

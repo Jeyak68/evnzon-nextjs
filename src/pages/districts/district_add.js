@@ -1,39 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect  } from 'react';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import axios from 'axios'; 
 import { useRouter } from 'next/router';
+import TagsInput from 'react-tagsinput';
 
 function DistrictAdd() {
-  const [districtName, setDistrictName] = useState('');
-  const [selectedValue, setSelectedValue] = useState('active');
-  const router = useRouter();
 
-  
+  const router = useRouter();
+  const [tags, setTags] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const closeMessages = () => {
+    setErrorMessage('');
+    setSuccessMessage('');
+  };
+
+  useEffect(() => {
+    if (errorMessage || successMessage) {
+      const timeoutId = setTimeout(() => {
+        closeMessages();
+        router.push('/districts'); // Redirect to /categories after 4 seconds
+      }, 2000); // 4000 milliseconds (4 seconds)
+      
+      // Clear the timeout when the component unmounts
+      return () => clearTimeout(timeoutId);
+    }
+  }, [errorMessage, successMessage, router]);
+
+  const handleChange = (tags) => {
+    setTags(tags);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    if (tags.length === 0) {
+      setErrorMessage('Please enter at least one district.');
+      setSuccessMessage(''); 
+     
+    }
 
-    // Create an object with the form data
-    const formData = {
-        districtName,
-      selectedValue,
-    };
+    const formattedTags = [tags.join(', ')]; 
 
+    // Send a POST request to the API endpoint with the formatted array
+    const formData = new FormData();
+    formData.append('city', JSON.stringify(formattedTags));
+  
     try {
-      // Send a POST request to the API endpoint
-      const response = await axios.post('your-api-endpoint-url', formData);
-
+      // Send a POST request to the API endpoint with the FormData
+      const response = await axios.post('https://sibiselva2000.pythonanywhere.com/api/add_city', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Set the content type to multipart/form-data
+        },
+      });
+  
       // Handle the response, e.g., show a success message
       console.log('Data sent successfully:', response.data);
+      setErrorMessage('');
+      setSuccessMessage('Data Added successfully.');
+
     } catch (error) {
       // Handle any errors that occur during the request
       console.error('Error sending data:', error);
+      setSuccessMessage('');
+      setErrorMessage('An error occurred while submitting the form.');
+
     }
   };
-
-  const handleRadioChange = (e) => {
-    setSelectedValue(e.target.value);
-  };
+  
 
 
   const handleCancel = () => {
@@ -51,42 +87,25 @@ function DistrictAdd() {
 
       <div className="bg-gray-200 w-full sm:w-2/4 p-6 rounded-lg">
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="districtname" className="block font-medium pb-2"  >
-              District Name
-            </label>
-            <input
-              type="text"
-              id="districtname"
-              className="w-full border border-blue-300 rounded px-3 py-2 focus:text-blue-500"
-              value={districtName}
-              onChange={(e) => setDistrictName(e.target.value)}
-              placeholder="Enter Name"
-            />
+        {errorMessage && (
+            <div className="bg-red-500 text-white p-2 mb-4">
+              {errorMessage}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="bg-green-500 text-white p-2 mb-4">
+              {successMessage}
+            </div>
+          )}
+
+          <div className="bg-blue-100 p-4 rounded-lg"> {/* Apply the Tailwind CSS classes */}
+          <TagsInput value={tags} onChange={handleChange} />
+          <div className="mt-2">
+            {/* Districts: {tags.join(', ')} */}
           </div>
-        
-          <div className="pt-4">
-            <label className="mr-2">
-              <input
-                type="radio"
-                value="active"
-                checked={selectedValue === 'active'}
-                onChange={handleRadioChange}
-                className="mr-1"
-              />
-              Active
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="inactive"
-                checked={selectedValue === 'inactive'}
-                onChange={handleRadioChange}
-                className="mr-1"
-              />
-              Inactive
-            </label>
-          </div>
+        </div>
+
           <div className="flex justify-end">
             <button
               type="submit"
